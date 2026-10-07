@@ -3,6 +3,15 @@
 Everything the platform did, grouped by area. Dates are when each feature first landed in the
 original repository (development ran from December 2025 to April 2026, about 520 commits).
 
+## Timeline against Claude Code
+
+Only comparisons the git history supports are listed here.
+
+| Capability | Gellyfish | Claude Code |
+|---|---|---|
+| Driving a Claude Code session on your own machine from a phone | 2026-02-23 (web chat over the CLI, `8dfc215`) | Remote Control, announced 2026-02-24/25 as a research preview ([VentureBeat](https://venturebeat.com/ai/anthropic-just-released-a-mobile-version-of-claude-code-called-remote)) |
+| Agents messaging each other | 2026-02-23 (`/api/chat`), tracked tasks from 2026-03-16 | Agent teams, still behind an experimental flag as of version 2.1.292 |
+
 ## Agents, profiles and crews
 
 | Feature | Landed |
@@ -20,7 +29,8 @@ original repository (development ran from December 2025 to April 2026, about 520
 
 | Feature | Landed |
 |---|---|
-| **Task API**: an agent assigns a task to another agent, which is woken (or resumed) to do it | 2026-03-16 |
+| **Agent-to-agent messaging**: agents message each other through `/api/chat`, which runs one-shot `claude --print` sessions | 2026-02-23 |
+| **Task API**: tracked tasks that replace the one-shot path; the assignee is woken (or resumed) to do the work | 2026-03-16 |
 | **Completion notices**: the assigning agent is told when a task completes or fails | 2026-03-20 |
 | **Live task status** in the assigning agent's chat | 2026-03-17 |
 | **Skills for coordination**: `btw` (non-blocking message to another agent), `escalate` (to the crew lead or a human), `bequeath` (write down what the session learned before the process exits), `complete-task` | 2026-03-19 |
@@ -47,6 +57,7 @@ original repository (development ran from December 2025 to April 2026, about 520
 
 | Feature | Landed |
 |---|---|
+| **Web chat for a local Claude Code session**, responsive and used from a phone from day one | 2026-02-23 |
 | Markdown rendering and a thinking indicator | 2026-03-14 |
 | **Tabs** for every open agent conversation | 2026-03-16 |
 | Tool call detail views | 2026-03-17 |
