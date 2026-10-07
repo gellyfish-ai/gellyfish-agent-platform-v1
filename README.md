@@ -29,6 +29,28 @@ held in the iPhone's Secure Enclave.
 - **Requires a human signature for risky actions.** Any MCP tool can be marked `approve`.
   Calling it pauses the agent until you approve on your phone with Face ID.
 
+## Screenshots
+
+A demo crew (Coordinator, Coder, QA) fixing a bug in a small repository. The Coordinator
+delegated the fix to the Coder and the check to QA through the task API, then reported back.
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/web-chat-dark.png">
+  <img alt="Web UI: the Coordinator's chat, showing completed tasks for Coder and QA and a summary" src="docs/screenshots/web-chat-light.png">
+</picture>
+
+The Coder's own tab, with the diff and test output it reported:
+
+<img alt="Web UI: the Coder's chat with a diff and test results" src="docs/screenshots/web-coder.png">
+
+The iOS app: agent list, a chat, and the crew view.
+
+<p>
+  <img alt="iOS: chat list with three agents" src="docs/screenshots/ios-chats.png" width="250">
+  <img alt="iOS: the Coder's chat" src="docs/screenshots/ios-chat.png" width="250">
+  <img alt="iOS: crew detail with lead and members" src="docs/screenshots/ios-crew.png" width="250">
+</p>
+
 ## Architecture
 
 ```
