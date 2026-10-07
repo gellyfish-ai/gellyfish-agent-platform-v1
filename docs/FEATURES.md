@@ -68,12 +68,12 @@ pipe for agent-to-agent messaging", replaced by the task system.
 | Markdown rendering and a thinking indicator | 2026-03-14 |
 | **Tabs** for every open agent conversation | 2026-03-16 |
 | Tool call detail views | 2026-03-17 |
-| **Emoji reactions** on messages | 2026-03-21 |
+| **Emoji reactions** on messages, passed back to the agent as feedback ("[User reacted 👎 to: …]") | 2026-03-21 |
 | **Image attachments** in the input | 2026-03-21 |
 | **Inline screenshots** with click-to-zoom | 2026-03-21 |
 | **Session search** with an agent filter | 2026-03-23 |
 | **Voice input**, transcribed locally with whisper.cpp | 2026-03-27 |
-| **Reply to / quote** a message, iMessage style | 2026-04-07 |
+| **Reply to / quote** any message, iMessage style; the quoted text is sent to the agent with the reply | 2026-04-07 |
 
 ## Mobile
 
