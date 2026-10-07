@@ -23,9 +23,10 @@ pipe for agent-to-agent messaging", replaced by the task system.
 
 | Feature | Landed |
 |---|---|
-| **Profiles**: role definitions with their own `CLAUDE.md`, skills and MCP servers | 2026-03-13 |
-| **Crews**: groups of profiles with a lead, an icon and a shared skill set | 2026-03-16 |
-| **Agents and conversations**: agents hired from a profile, each with a persistent conversation | 2026-03-19 |
+| **Profiles as job descriptions**: each profile has its own system prompt, `CLAUDE.md`, skills and MCP servers, so a Coder and a QA agent see different tools and know different procedures | 2026-03-13 |
+| **Crews**: groups of agents with a lead and an icon | 2026-03-16 |
+| **Skills at three levels**: global skills for every agent, crew skills for one crew, profile skills for one job description, linked into each workspace at spawn time | 2026-03-19 |
+| **Several agents per profile**: agents are hired from a profile like employees from a job description, each with its own workspace and persistent conversation, and a coordinator assigns them work | 2026-03-19 |
 | **Hiring** agents into a crew from the web UI | 2026-04-02 |
 | **Crew heartbeat**: periodic health checks on every agent in a crew | 2026-03-19 |
 | **Profile sync**: two-way `CLAUDE.md` sync between agent workspaces and a profiles repository | 2026-03-29 |
