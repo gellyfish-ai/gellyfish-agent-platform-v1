@@ -6,7 +6,7 @@ held in the iPhone's Secure Enclave.
 
 > **Status: archived.** Built between December 2025 and April 2026 and no longer developed.
 > Claude Code now covers much of the same ground itself (remote control from a phone,
-> background agents, agent teams, push notifications), and the work moved on to a distributed
+> subagents, voice input, automatic permission decisions), and the work moved on to a distributed
 > redesign. This repository is published as a reference and a write-up, not as software to
 > deploy. See [Known limitations](#known-limitations) before running any of it.
 
@@ -29,7 +29,8 @@ held in the iPhone's Secure Enclave.
 - **Requires a human signature for risky actions.** Any MCP tool can be marked `approve`.
   Calling it pauses the agent until you approve on your phone with Face ID.
 
-The full list, with the date each feature landed, is in [docs/FEATURES.md](docs/FEATURES.md).
+The full list, with the date each feature landed and how it lines up with Claude Code, is in
+[docs/FEATURES.md](docs/FEATURES.md).
 
 ## Screenshots
 

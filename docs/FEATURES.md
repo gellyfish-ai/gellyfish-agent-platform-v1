@@ -9,15 +9,27 @@ and its history, issues and pull requests are available on request.
 
 ## Timeline against Claude Code
 
-Only comparisons the git history supports are listed here.
+Where Claude Code has a comparable feature, both dates are listed, whichever came first. The
+earlier date is in bold. Gellyfish dates come from the original repository; Claude Code dates are
+public announcements.
 
 | Capability | Gellyfish | Claude Code |
 |---|---|---|
-| Driving a Claude Code session on your own machine from a phone | 2026-02-23 (web chat over the CLI, `8dfc215`) | Remote Control, announced 2026-02-24/25 as a research preview ([VentureBeat](https://venturebeat.com/ai/anthropic-just-released-a-mobile-version-of-claude-code-called-remote)) |
-| Agents messaging each other | 2026-02-23 (`/api/chat`, `8dfc215`), tracked tasks from 2026-03-16 (`bd3db71`) | Agent teams, still behind an experimental flag as of version 2.1.292 |
+| Driving a Claude Code session on your own machine from a phone | **2026-02-23**: web chat over the CLI (`8dfc215`) | 2026-02-24/25: Remote Control, research preview [1] |
+| Agents messaging each other | 2026-02-23: `/api/chat` (`8dfc215`); tracked tasks from 2026-03-16 (`bd3db71`) | Agent teams: experimental preview from 2026-02-05, still behind a flag in version 2.1.292 [2] |
+| Role-specific agents with their own prompt and tools | 2026-03-13: profiles; 2026-03-19: several persistent agents per profile | **2025-07-24**: custom subagents, short-lived helpers inside one session [3] |
+| Skipping permission prompts | 2026-03-14: a switch that can be flipped while agents run, with exceptions | **2025**: `--dangerously-skip-permissions`, set when the session starts |
+| Voice input | 2026-03-27: web, transcribed locally; 2026-03-31: hands-free voice mode on iOS | **2026-03-03**: `/voice`, rolled out gradually [4] |
+| Deciding permissions per tool without asking | 2026-04-08: per-tool risk levels set by rules | **2026-03-24**: auto mode, a classifier, as a research preview; generally available 2026-07-10 [5] |
 
 The commit that retired `/api/chat` (`4b333d9`, 2026-03-17) describes it as "the original dumb
 pipe for agent-to-agent messaging", replaced by the task system.
+
+1. [VentureBeat](https://venturebeat.com/ai/anthropic-just-released-a-mobile-version-of-claude-code-called-remote)
+2. Announced with Claude Opus 4.6; enabled with `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS`
+3. [AlternativeTo](https://alternativeto.net/news/2025/7/claude-code-gets-custom-subagents-for-task-automation)
+4. [implicator.ai](https://www.implicator.ai/anthropic-adds-voice-mode-to-claude-code-starting-with-5-of-users/)
+5. [The Register](https://www.theregister.com/a/5285326), [GIGAZINE](https://gigazine.net/gsc_news/en/20260810-claude-code-auto-mode/)
 
 ## Agents, profiles and crews
 
