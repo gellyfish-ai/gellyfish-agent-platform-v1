@@ -9,7 +9,7 @@ Only comparisons the git history supports are listed here.
 
 | Capability | Gellyfish | Claude Code |
 |---|---|---|
-| Driving a Claude Code session on your own machine from a phone | 2026-02-23 (web chat over the CLI, `8dfc215`) | Remote Control, announced 2026-02-24/25 as a research preview ([VentureBeat](https://venturebeat.com/ai/anthropic-just-released-a-mobile-version-of-claude-code-called-remote)) |
+| Driving a Claude Code session on your own machine from a phone | 2026-02-23 (web chat over the CLI) | Remote Control, announced 2026-02-24/25 as a research preview ([VentureBeat](https://venturebeat.com/ai/anthropic-just-released-a-mobile-version-of-claude-code-called-remote)) |
 | Agents messaging each other | 2026-02-23 (`/api/chat`), tracked tasks from 2026-03-16 | Agent teams, still behind an experimental flag as of version 2.1.292 |
 
 ## Agents, profiles and crews
