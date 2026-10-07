@@ -54,8 +54,8 @@ pipe for agent-to-agent messaging", replaced by the task system.
 
 | Feature | Landed |
 |---|---|
-| **Auto-approve toggle** for tool permissions, handled server-side | 2026-03-14 |
-| **Per-tool risk levels** (none / notify / approve) with an API to configure them | 2026-04-08 |
+| **Auto-approve toggle**: every permission request passes through the gateway, so skipping prompts is a switch you can flip at any time rather than a launch flag, and tools can be excepted from it | 2026-03-14 |
+| **Per-tool risk levels** (none / notify / approve): `approve` tools are checked before auto-approve and always wait for a signed approval | 2026-04-08 |
 | **Device pairing** with a key generated in the iPhone's Secure Enclave | 2026-04-08 |
 | **Push approvals** over APNs, signed with Face ID | 2026-04-08 |
 | **Vault backend** for credentials and approval state, outside the agents' reach | 2026-04-15 |
