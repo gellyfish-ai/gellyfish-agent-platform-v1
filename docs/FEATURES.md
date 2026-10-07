@@ -3,14 +3,21 @@
 Everything the platform did, grouped by area. Dates are when each feature first landed in the
 original repository (development ran from December 2025 to April 2026, about 520 commits).
 
+This repository was published with fresh history. The original, private repository
+(`gellyfish-ai/Gellyfish-Agent-Platform`) is the audit trail: commit hashes below refer to it,
+and its history, issues and pull requests are available on request.
+
 ## Timeline against Claude Code
 
 Only comparisons the git history supports are listed here.
 
 | Capability | Gellyfish | Claude Code |
 |---|---|---|
-| Driving a Claude Code session on your own machine from a phone | 2026-02-23 (web chat over the CLI) | Remote Control, announced 2026-02-24/25 as a research preview ([VentureBeat](https://venturebeat.com/ai/anthropic-just-released-a-mobile-version-of-claude-code-called-remote)) |
-| Agents messaging each other | 2026-02-23 (`/api/chat`), tracked tasks from 2026-03-16 | Agent teams, still behind an experimental flag as of version 2.1.292 |
+| Driving a Claude Code session on your own machine from a phone | 2026-02-23 (web chat over the CLI, `8dfc215`) | Remote Control, announced 2026-02-24/25 as a research preview ([VentureBeat](https://venturebeat.com/ai/anthropic-just-released-a-mobile-version-of-claude-code-called-remote)) |
+| Agents messaging each other | 2026-02-23 (`/api/chat`, `8dfc215`), tracked tasks from 2026-03-16 (`bd3db71`) | Agent teams, still behind an experimental flag as of version 2.1.292 |
+
+The commit that retired `/api/chat` (`4b333d9`, 2026-03-17) describes it as "the original dumb
+pipe for agent-to-agent messaging", replaced by the task system.
 
 ## Agents, profiles and crews
 
