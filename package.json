@@ -1,0 +1,6 @@
+{
+  "devDependencies": {
+    "@go-task/cli": "^3.49.1",
+    "@playwright/test": "^1.57.0"
+  }
+}

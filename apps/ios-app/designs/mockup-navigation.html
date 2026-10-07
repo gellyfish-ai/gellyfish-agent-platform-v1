@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gellyfish iOS — Navigation Mockup</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #000; color: #fff; font-family: -apple-system, BlinkMacSystemFont, 'SF Pro', sans-serif; max-width: 390px; margin: 0 auto; height: 844px; position: relative; overflow: hidden; }
+
+  /* Status bar */
+  .status-bar { height: 54px; display: flex; align-items: flex-end; justify-content: space-between; padding: 0 20px 8px; font-size: 12px; font-weight: 600; }
+  .status-bar .time { font-size: 15px; }
+
+  /* Tab content area */
+  .tab-content { height: 690px; overflow-y: auto; }
+
+  /* Nav header */
+  .nav-header { padding: 8px 16px 12px; }
+  .nav-header h1 { font-size: 34px; font-weight: 700; }
+  .nav-header .search { background: #1c1c1e; border-radius: 10px; padding: 8px 12px; margin-top: 10px; color: #98989e; font-size: 15px; display: flex; align-items: center; gap: 6px; }
+
+  /* Session list (WhatsApp style) */
+  .session-row { display: flex; align-items: center; padding: 10px 16px; border-bottom: 0.5px solid #2c2c2e; gap: 12px; }
+  .session-row:active { background: #1c1c1e; }
+  .avatar { width: 50px; height: 50px; border-radius: 25px; background: #2c2c2e; display: flex; align-items: center; justify-content: center; font-size: 24px; position: relative; flex-shrink: 0; }
+  .avatar .status-dot { position: absolute; bottom: 1px; right: 1px; width: 12px; height: 12px; border-radius: 6px; border: 2px solid #000; }
+  .status-dot.active { background: #30d158; }
+  .status-dot.idle { background: #ffd60a; }
+  .status-dot.off { background: #636366; }
+  .session-info { flex: 1; min-width: 0; }
+  .session-name { font-size: 16px; font-weight: 600; }
+  .session-preview { font-size: 14px; color: #98989e; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 2px; }
+  .session-meta { text-align: right; flex-shrink: 0; }
+  .session-time { font-size: 13px; color: #98989e; }
+  .session-badge { background: #0a84ff; color: #fff; font-size: 12px; font-weight: 600; border-radius: 10px; padding: 1px 7px; margin-top: 4px; display: inline-block; }
+
+  /* Crew list */
+  .crew-row { display: flex; align-items: center; padding: 12px 16px; border-bottom: 0.5px solid #2c2c2e; gap: 12px; }
+  .crew-icon { width: 44px; height: 44px; border-radius: 12px; background: #1c1c1e; display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; }
+  .crew-info { flex: 1; }
+  .crew-name { font-size: 16px; font-weight: 600; }
+  .crew-members { font-size: 14px; color: #98989e; margin-top: 2px; }
+  .chevron { color: #636366; font-size: 14px; }
+
+  /* Profile list */
+  .profile-row { display: flex; align-items: center; padding: 12px 16px; border-bottom: 0.5px solid #2c2c2e; gap: 12px; }
+  .profile-icon { width: 44px; height: 44px; border-radius: 22px; background: #1c1c1e; display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; }
+  .profile-info { flex: 1; }
+  .profile-name { font-size: 16px; font-weight: 600; }
+  .profile-agents { font-size: 14px; color: #98989e; margin-top: 2px; }
+
+  /* More menu */
+  .more-section { margin: 20px 16px 10px; font-size: 13px; color: #98989e; text-transform: uppercase; }
+  .more-row { display: flex; align-items: center; padding: 12px 16px; background: #1c1c1e; gap: 12px; }
+  .more-row:first-child { border-radius: 10px 10px 0 0; }
+  .more-row:last-child { border-radius: 0 0 10px 10px; }
+  .more-row + .more-row { border-top: 0.5px solid #2c2c2e; }
+  .more-icon { width: 30px; height: 30px; border-radius: 7px; display: flex; align-items: center; justify-content: center; font-size: 16px; color: #fff; }
+  .more-label { flex: 1; font-size: 16px; }
+  .more-value { color: #98989e; font-size: 16px; }
+  .more-group { margin: 0 16px; overflow: hidden; border-radius: 10px; }
+
+  /* FAB */
+  .fab { position: absolute; bottom: 100px; right: 20px; width: 56px; height: 56px; border-radius: 28px; background: #0a84ff; display: flex; align-items: center; justify-content: center; font-size: 28px; color: #fff; box-shadow: 0 4px 12px rgba(0,0,0,0.4); }
+
+  /* Tab bar */
+  .tab-bar { position: absolute; bottom: 0; left: 0; right: 0; height: 83px; background: #1c1c1e; border-top: 0.5px solid #2c2c2e; display: flex; justify-content: space-around; padding-top: 8px; }
+  .tab { display: flex; flex-direction: column; align-items: center; gap: 2px; flex: 1; }
+  .tab-icon { font-size: 22px; height: 28px; display: flex; align-items: center; }
+  .tab-label { font-size: 10px; }
+  .tab.active .tab-icon, .tab.active .tab-label { color: #0a84ff; }
+  .tab:not(.active) .tab-icon, .tab:not(.active) .tab-label { color: #636366; }
+
+  /* Page switcher */
+  .page { display: none; }
+  .page.active { display: block; }
+
+  /* Section header */
+  .section-header { display: flex; justify-content: space-between; align-items: baseline; padding: 0 16px; }
+  .section-header .edit { color: #0a84ff; font-size: 16px; }
+</style>
+</head>
+<body>
+
+<!-- Status Bar -->
+<div class="status-bar">
+  <span class="time">22:28</span>
+  <span>5G</span>
+</div>
+
+<!-- Tab: Chats -->
+<div class="page active" id="page-chats">
+  <div class="tab-content">
+    <div class="nav-header">
+      <div class="section-header">
+        <h1>Chats</h1>
+        <span class="edit">Edit</span>
+      </div>
+      <div class="search">&#128269; Search</div>
+    </div>
+
+    <div class="session-row">
+      <div class="avatar">🦮<div class="status-dot active"></div></div>
+      <div class="session-info">
+        <div class="session-name">CEO Assistant</div>
+        <div class="session-preview">MCP security policy updated. All 3 docs committed and pushed.</div>
+      </div>
+      <div class="session-meta">
+        <div class="session-time">22:15</div>
+      </div>
+    </div>
+
+    <div class="session-row">
+      <div class="avatar">👨‍💻<div class="status-dot idle"></div></div>
+      <div class="session-info">
+        <div class="session-name">Coder</div>
+        <div class="session-preview">PR #207. New packages/mcp-bluesky/ with TypeScript source...</div>
+      </div>
+      <div class="session-meta">
+        <div class="session-time">17:28</div>
+      </div>
+    </div>
+
+    <div class="session-row">
+      <div class="avatar">🪼<div class="status-dot active"></div></div>
+      <div class="session-info">
+        <div class="session-name">Coordinator</div>
+        <div class="session-preview">Bluesky MCP shipped. 14 PRs this session.</div>
+      </div>
+      <div class="session-meta">
+        <div class="session-time">17:30</div>
+      </div>
+    </div>
+
+    <div class="session-row">
+      <div class="avatar">📣<div class="status-dot active"></div></div>
+      <div class="session-info">
+        <div class="session-name">Social Media Manager</div>
+        <div class="session-preview">Cross-promoted Substack article. Thread posted on X.</div>
+      </div>
+      <div class="session-meta">
+        <div class="session-time">14:23</div>
+        <div class="session-badge">2</div>
+      </div>
+    </div>
+
+    <div class="session-row">
+      <div class="avatar">🧪<div class="status-dot idle"></div></div>
+      <div class="session-info">
+        <div class="session-name">QA Engineer</div>
+        <div class="session-preview">QA for PR #207 Bluesky MCP. Code review PASS.</div>
+      </div>
+      <div class="session-meta">
+        <div class="session-time">17:29</div>
+      </div>
+    </div>
+
+    <div class="session-row">
+      <div class="avatar">✍️<div class="status-dot active"></div></div>
+      <div class="session-info">
+        <div class="session-name">Content Writer</div>
+        <div class="session-preview">Article #6 drafted. "Profiles, Agents, and Crews"</div>
+      </div>
+      <div class="session-meta">
+        <div class="session-time">11:45</div>
+      </div>
+    </div>
+
+    <div class="session-row">
+      <div class="avatar">🌎<div class="status-dot active"></div></div>
+      <div class="session-info">
+        <div class="session-name">Chrome</div>
+        <div class="session-preview">Navigated to accounts.google.com for signup flow</div>
+      </div>
+      <div class="session-meta">
+        <div class="session-time">09:30</div>
+      </div>
+    </div>
+
+    <div class="session-row">
+      <div class="avatar">🖥<div class="status-dot off"></div></div>
+      <div class="session-info">
+        <div class="session-name">Mac Desktop Automation</div>
+        <div class="session-preview">Created .xcodeproj, built and launched on simulator</div>
+      </div>
+      <div class="session-meta">
+        <div class="session-time">Yesterday</div>
+      </div>
+    </div>
+  </div>
+  <div class="fab">+</div>
+</div>
+
+<!-- Tab: Crews -->
+<div class="page" id="page-crews">
+  <div class="tab-content">
+    <div class="nav-header">
+      <h1>Crews</h1>
+    </div>
+
+    <div class="crew-row">
+      <div class="crew-icon">🏗️</div>
+      <div class="crew-info">
+        <div class="crew-name">GAP</div>
+        <div class="crew-members">3 members — Coordinator, Coder, QA</div>
+      </div>
+      <span class="chevron">›</span>
+    </div>
+
+    <div class="crew-row">
+      <div class="crew-icon">💼</div>
+      <div class="crew-info">
+        <div class="crew-name">Gellyfish Inc</div>
+        <div class="crew-members">4 members — CEO, SMM, Content Writer, Chrome</div>
+      </div>
+      <span class="chevron">›</span>
+    </div>
+
+    <div class="crew-row">
+      <div class="crew-icon">📱</div>
+      <div class="crew-info">
+        <div class="crew-name">iOS Device Automation</div>
+        <div class="crew-members">2 members — iOS Lead, iOS Test Agent</div>
+      </div>
+      <span class="chevron">›</span>
+    </div>
+  </div>
+</div>
+
+<!-- Tab: Profiles -->
+<div class="page" id="page-profiles">
+  <div class="tab-content">
+    <div class="nav-header">
+      <h1>Profiles</h1>
+    </div>
+
+    <div class="profile-row">
+      <div class="profile-icon">🦮</div>
+      <div class="profile-info">
+        <div class="profile-name">CEO Assistant</div>
+        <div class="profile-agents">1 agent — active</div>
+      </div>
+      <span class="chevron">›</span>
+    </div>
+
+    <div class="profile-row">
+      <div class="profile-icon">👨‍💻</div>
+      <div class="profile-info">
+        <div class="profile-name">Coder</div>
+        <div class="profile-agents">1 agent — idle</div>
+      </div>
+      <span class="chevron">›</span>
+    </div>
+
+    <div class="profile-row">
+      <div class="profile-icon">🪼</div>
+      <div class="profile-info">
+        <div class="profile-name">Coordinator</div>
+        <div class="profile-agents">1 agent — active</div>
+      </div>
+      <span class="chevron">›</span>
+    </div>
+
+    <div class="profile-row">
+      <div class="profile-icon">🧪</div>
+      <div class="profile-info">
+        <div class="profile-name">QA Engineer</div>
+        <div class="profile-agents">1 agent — idle</div>
+      </div>
+      <span class="chevron">›</span>
+    </div>
+
+    <div class="profile-row">
+      <div class="profile-icon">📣</div>
+      <div class="profile-info">
+        <div class="profile-name">Social Media Manager</div>
+        <div class="profile-agents">1 agent — active</div>
+      </div>
+      <span class="chevron">›</span>
+    </div>
+
+    <div class="profile-row">
+      <div class="profile-icon">🌎</div>
+      <div class="profile-info">
+        <div class="profile-name">Chrome</div>
+        <div class="profile-agents">2 agents — 1 active, 1 cold</div>
+      </div>
+      <span class="chevron">›</span>
+    </div>
+
+    <div class="profile-row">
+      <div class="profile-icon">✍️</div>
+      <div class="profile-info">
+        <div class="profile-name">Content Writer</div>
+        <div class="profile-agents">1 agent — active</div>
+      </div>
+      <span class="chevron">›</span>
+    </div>
+  </div>
+</div>
+
+<!-- Tab: More -->
+<div class="page" id="page-more">
+  <div class="tab-content">
+    <div class="nav-header">
+      <h1>More</h1>
+    </div>
+
+    <div class="more-section">CONNECTION</div>
+    <div class="more-group">
+      <div class="more-row">
+        <div class="more-icon" style="background:#30d158;">&#9679;</div>
+        <div class="more-label">Server</div>
+        <div class="more-value">10.0.0.1:3000</div>
+        <span class="chevron">›</span>
+      </div>
+    </div>
+
+    <div class="more-section">VOICE</div>
+    <div class="more-group">
+      <div class="more-row">
+        <div class="more-icon" style="background:#ff453a;">&#127908;</div>
+        <div class="more-label">Language</div>
+        <div class="more-value">English</div>
+        <span class="chevron">›</span>
+      </div>
+      <div class="more-row">
+        <div class="more-icon" style="background:#0a84ff;">&#9881;</div>
+        <div class="more-label">Transcription</div>
+        <div class="more-value">Apple Speech</div>
+        <span class="chevron">›</span>
+      </div>
+    </div>
+
+    <div class="more-section">SYSTEM</div>
+    <div class="more-group">
+      <div class="more-row">
+        <div class="more-icon" style="background:#ff9f0a;">&#128202;</div>
+        <div class="more-label">System Status</div>
+        <div class="more-value">18 agents</div>
+        <span class="chevron">›</span>
+      </div>
+      <div class="more-row">
+        <div class="more-icon" style="background:#bf5af2;">&#128273;</div>
+        <div class="more-label">Credentials</div>
+        <div class="more-value"></div>
+        <span class="chevron">›</span>
+      </div>
+    </div>
+
+    <div class="more-section">ABOUT</div>
+    <div class="more-group">
+      <div class="more-row">
+        <div class="more-icon" style="background:#636366;">&#9432;</div>
+        <div class="more-label">Version</div>
+        <div class="more-value">1.0.0</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Tab Bar -->
+<div class="tab-bar">
+  <div class="tab" onclick="showPage('crews')">
+    <div class="tab-icon">&#128101;</div>
+    <div class="tab-label">Crews</div>
+  </div>
+  <div class="tab" onclick="showPage('profiles')">
+    <div class="tab-icon">&#128100;</div>
+    <div class="tab-label">Profiles</div>
+  </div>
+  <div class="tab active" onclick="showPage('chats')">
+    <div class="tab-icon">&#128172;</div>
+    <div class="tab-label">Chats</div>
+  </div>
+  <div class="tab" onclick="showPage('more')">
+    <div class="tab-icon">&#8943;</div>
+    <div class="tab-label">More</div>
+  </div>
+</div>
+
+<script>
+function showPage(name) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('page-' + name).classList.add('active');
+  event.currentTarget.classList.add('active');
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Log Viewer - Gellyfish</title>
+  <link rel="stylesheet" href="/css/base.css">
+  <style>
+    body { padding: 16px 24px; max-width: 1400px; margin: 0 auto; height: auto; overflow: auto; }
+    h1 { font-size: 1.4rem; margin-bottom: 12px; }
+    .filter-bar { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-bottom: 16px; }
+    .filter-bar select, .filter-bar input { padding: 6px 10px; border-radius: 4px; border: 1px solid var(--border); background: var(--surface); color: var(--text); font-size: 0.9rem; }
+    .filter-bar input { width: 160px; }
+    .filter-bar button { padding: 6px 14px; border-radius: 4px; border: 1px solid var(--border); background: var(--accent); color: #fff; cursor: pointer; font-size: 0.9rem; }
+    .filter-bar button:hover { opacity: 0.9; }
+    .live-badge { font-size: 0.8rem; padding: 3px 8px; border-radius: 10px; background: var(--success-text); color: #fff; }
+    .live-badge.paused { background: var(--text-muted); }
+    .log-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; table-layout: fixed; }
+    .log-table th { text-align: left; padding: 6px 8px; border-bottom: 2px solid var(--border); font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; position: sticky; top: 0; background: var(--bg); }
+    .log-table td { padding: 5px 8px; border-bottom: 1px solid var(--border); vertical-align: top; word-break: break-word; }
+    .log-table .col-time { width: 140px; }
+    .log-table .col-level { width: 60px; }
+    .log-table .col-agent { width: 120px; }
+    .log-table .col-msg { }
+    .badge { display: inline-block; padding: 1px 6px; border-radius: 3px; font-size: 0.75rem; font-weight: 600; }
+    .badge-error { background: var(--error-bg); color: var(--error-text); border: 1px solid var(--error-border); }
+    .badge-warn { background: #fef3c7; color: #92400e; border: 1px solid #fcd34d; }
+    .badge-info { background: var(--surface); color: var(--text-muted); border: 1px solid var(--border); }
+    @media (prefers-color-scheme: dark) {
+      .badge-warn { background: #451a03; color: #fbbf24; border-color: #78350f; }
+    }
+    .log-row { cursor: pointer; }
+    .log-row:hover { background: var(--hover-overlay); }
+    .log-row.expanded + .detail-row { display: table-row; }
+    .detail-row { display: none; }
+    .detail-row td { background: var(--surface); padding: 8px 12px; }
+    .detail-row pre { margin: 0; white-space: pre-wrap; font-size: 0.8rem; max-height: 300px; overflow: auto; }
+    .empty { color: var(--text-muted); font-style: italic; padding: 24px 0; text-align: center; }
+    .status-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; font-size: 0.85rem; color: var(--text-muted); }
+  </style>
+</head>
+<body>
+  <h1>Log Viewer</h1>
+
+  <div class="filter-bar">
+    <select id="level-select">
+      <option value="warn">Warn + Error</option>
+      <option value="error">Error only</option>
+      <option value="info">All (info+)</option>
+    </select>
+    <input id="agent-input" type="text" placeholder="Agent/Profile ID">
+    <input id="search-input" type="text" placeholder="Search text...">
+    <select id="time-select">
+      <option value="3600000">Last 1h</option>
+      <option value="21600000">Last 6h</option>
+      <option value="86400000" selected>Last 24h</option>
+      <option value="604800000">Last 7d</option>
+      <option value="">All time</option>
+    </select>
+    <button id="load-btn">Load logs</button>
+  </div>
+
+  <div class="status-bar">
+    <span id="count-label">-</span>
+    <span id="live-indicator" class="live-badge">Live</span>
+  </div>
+
+  <table class="log-table">
+    <thead>
+      <tr>
+        <th class="col-time">Time</th>
+        <th class="col-level">Level</th>
+        <th class="col-agent">Agent</th>
+        <th class="col-msg">Message</th>
+      </tr>
+    </thead>
+    <tbody id="log-body"></tbody>
+  </table>
+
+  <script>
+    const logBody = document.getElementById('log-body');
+    const countLabel = document.getElementById('count-label');
+    const liveIndicator = document.getElementById('live-indicator');
+    let autoScroll = true;
+    let evtSource = null;
+
+    function esc(s) {
+      if (s == null) return '';
+      const d = document.createElement('div');
+      d.textContent = String(s);
+      return d.innerHTML;
+    }
+
+    function formatTime(ms) {
+      return new Date(ms).toLocaleString(undefined, {
+        month: 'short', day: 'numeric',
+        hour: '2-digit', minute: '2-digit', second: '2-digit',
+      });
+    }
+
+    function badgeClass(levelName) {
+      if (levelName === 'error') return 'badge badge-error';
+      if (levelName === 'warn') return 'badge badge-warn';
+      return 'badge badge-info';
+    }
+
+    function levelName(n) {
+      if (n >= 50) return 'error';
+      if (n >= 40) return 'warn';
+      if (n >= 30) return 'info';
+      return 'debug';
+    }
+
+    function renderRow(entry) {
+      const ln = entry.levelName || levelName(entry.level);
+      const agent = esc(entry.agentId || entry.profileId || '');
+      const tr = document.createElement('tr');
+      tr.className = 'log-row';
+      tr.innerHTML = `
+        <td class="col-time">${esc(formatTime(entry.time))}</td>
+        <td class="col-level"><span class="${badgeClass(ln)}">${esc(ln)}</span></td>
+        <td class="col-agent" title="${agent}">${esc(agent.slice(0, 12))}</td>
+        <td class="col-msg">${esc(entry.msg)}${entry.error ? ' <span style="color:var(--error-text)">' + esc(entry.error).slice(0, 100) + '</span>' : ''}</td>
+      `;
+      tr.addEventListener('click', () => {
+        tr.classList.toggle('expanded');
+      });
+
+      const detail = document.createElement('tr');
+      detail.className = 'detail-row';
+      detail.innerHTML = `<td colspan="4"><pre>${esc(JSON.stringify(entry, null, 2))}</pre></td>`;
+
+      return [tr, detail];
+    }
+
+    async function loadLogs() {
+      const level = document.getElementById('level-select').value;
+      const agentId = document.getElementById('agent-input').value.trim();
+      const search = document.getElementById('search-input').value.trim();
+      const timeMs = document.getElementById('time-select').value;
+
+      const params = new URLSearchParams();
+      if (level) params.set('level', level);
+      if (agentId) params.set('agent_id', agentId);
+      if (search) params.set('search', search);
+      if (timeMs) params.set('since_ms', String(Date.now() - parseInt(timeMs)));
+      params.set('limit', '500');
+
+      try {
+        const res = await fetch(`/api/logs?${params}`);
+        const data = await res.json();
+        logBody.innerHTML = '';
+        if (data.entries.length === 0) {
+          logBody.innerHTML = '<tr><td colspan="4" class="empty">No log entries found</td></tr>';
+        } else {
+          for (const entry of data.entries) {
+            const [row, detail] = renderRow(entry);
+            logBody.appendChild(row);
+            logBody.appendChild(detail);
+          }
+        }
+        countLabel.textContent = `${data.total} entries`;
+      } catch (err) {
+        logBody.innerHTML = `<tr><td colspan="4" class="empty">Failed to load logs: ${esc(String(err))}</td></tr>`;
+      }
+    }
+
+    function startStream() {
+      if (evtSource) evtSource.close();
+      evtSource = new EventSource('/api/logs/stream');
+      evtSource.onmessage = (evt) => {
+        try {
+          const entry = JSON.parse(evt.data);
+          const selectedLevel = document.getElementById('level-select').value;
+          const minLevel = { error: 50, warn: 40, info: 30 };
+          if (entry.level < (minLevel[selectedLevel] ?? 30)) return;
+          entry.levelName = levelName(entry.level);
+          const [row, detail] = renderRow(entry);
+          const firstRow = logBody.firstChild;
+          if (firstRow) {
+            logBody.insertBefore(detail, firstRow);
+            logBody.insertBefore(row, detail);
+          } else {
+            logBody.appendChild(row);
+            logBody.appendChild(detail);
+          }
+          if (autoScroll) window.scrollTo(0, 0);
+        } catch {}
+      };
+      evtSource.onerror = () => {
+        liveIndicator.textContent = 'Reconnecting...';
+        liveIndicator.className = 'live-badge paused';
+      };
+      evtSource.onopen = () => {
+        liveIndicator.textContent = 'Live';
+        liveIndicator.className = 'live-badge';
+      };
+    }
+
+    liveIndicator.addEventListener('click', () => {
+      autoScroll = !autoScroll;
+      liveIndicator.textContent = autoScroll ? 'Live' : 'Paused';
+      liveIndicator.className = autoScroll ? 'live-badge' : 'live-badge paused';
+    });
+
+    document.getElementById('load-btn').addEventListener('click', loadLogs);
+    document.getElementById('search-input').addEventListener('keydown', (e) => { if (e.key === 'Enter') loadLogs(); });
+
+    loadLogs();
+    startStream();
+  </script>
+</body>
+</html>

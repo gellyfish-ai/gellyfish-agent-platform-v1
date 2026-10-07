@@ -1,0 +1,150 @@
+/* Diagnostics → Approvals tab. Reuses .admin-* primitives from tasks.css. */
+
+.diagnostics-page {
+  position: relative;
+}
+
+.diagnostics-header {
+  margin-bottom: 1rem;
+}
+
+.diagnostics-tabs {
+  display: flex;
+  gap: 0.25rem;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 1rem;
+}
+
+.diagnostics-tab {
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  color: var(--text-muted);
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.diagnostics-tab.active {
+  color: var(--text);
+  border-bottom-color: var(--accent);
+}
+
+.diagnostics-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.diagnostics-toolbar h3 {
+  margin: 0;
+}
+
+.diagnostics-toolbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.diagnostics-status {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.diagnostics-empty {
+  padding: 1.5rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text-muted);
+}
+
+.diagnostics-empty p {
+  margin: 0.25rem 0;
+}
+
+.diagnostics-empty code {
+  background: var(--code-bg);
+  padding: 0.1rem 0.35rem;
+  border-radius: 3px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.85em;
+}
+
+.diagnostics-empty-hint {
+  font-size: 0.85em;
+  margin-top: 0.5rem !important;
+}
+
+.diagnostics-table .diagnostics-row {
+  cursor: pointer;
+}
+
+.diagnostics-pass {
+  color: var(--success-text);
+  font-weight: 700;
+}
+
+.diagnostics-fail {
+  color: var(--danger-text);
+  font-weight: 700;
+}
+
+.diagnostics-detail-row > td {
+  background: var(--surface);
+  padding: 1rem !important;
+}
+
+.diagnostics-detail-fields {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 0.25rem 1rem;
+  margin-bottom: 1rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.8rem;
+}
+
+.diagnostics-detail-fields dt {
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.diagnostics-detail-fields dd {
+  margin: 0;
+  word-break: break-all;
+  color: var(--text);
+}
+
+.diagnostics-detail-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.diagnostics-toast {
+  position: fixed;
+  bottom: 1.5rem;
+  left: 50%;
+  transform: translateX(-50%) translateY(2rem);
+  background: var(--text);
+  color: var(--bg);
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  z-index: 1000;
+}
+
+.diagnostics-toast.visible {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+.diagnostics-toast.error {
+  background: var(--deny-bg);
+  color: #fff;
+}

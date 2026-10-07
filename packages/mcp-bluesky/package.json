@@ -1,0 +1,23 @@
+{
+  "name": "@gellyfish/bluesky-mcp",
+  "version": "1.0.0",
+  "description": "Bluesky MCP server with threading support",
+  "type": "module",
+  "main": "dist/index.js",
+  "bin": {
+    "bluesky-mcp": "dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch"
+  },
+  "dependencies": {
+    "@atproto/api": "^0.13.0",
+    "@modelcontextprotocol/sdk": "^1.12.0",
+    "zod": "^3.24.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.19.15",
+    "typescript": "^5.9.3"
+  }
+}

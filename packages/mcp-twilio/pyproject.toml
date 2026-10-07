@@ -1,0 +1,27 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "gellyfish-twilio-mcp"
+version = "1.0.0"
+description = "Twilio SMS MCP server for Gellyfish agents. Forked from 0x-Professor/Twilio-mcp-server (MIT)."
+requires-python = ">=3.11"
+license = "MIT"
+dependencies = [
+    "mcp[cli]>=1.0.0",
+    "fastmcp>=3.0.0",
+    "twilio>=9.0.0",
+    "pydantic>=2.0.0",
+    "pydantic-settings>=2.0.0",
+    "fastapi>=0.110.0",
+    "uvicorn>=0.29.0",
+    "python-dotenv>=1.0.0",
+]
+
+[project.scripts]
+gellyfish-twilio-mcp = "twilio_mcp.server:main"
+gellyfish-twilio-boot = "twilio_mcp.boot:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/twilio_mcp"]

@@ -1,0 +1,51 @@
+{
+  "enableAllProjectMcpServers": true,
+  "permissions": {
+    "allow": [
+      "Edit(.claude/commands/*)",
+      "Write(.claude/commands/*)",
+      "Edit(*/.claude/commands/*)",
+      "Write(*/.claude/commands/*)",
+      "WebSearch",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push)",
+      "Bash(git status)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)",
+      "Bash(npm:*)",
+      "Bash(pnpm:*)",
+      "Bash(docker:*)",
+      "Bash(ls:*)",
+      "Bash(cat:*)",
+      "Bash(gh project:*)",
+      "Read(.claude/context/**)",
+      "Write(.claude/context/**)",
+      "Bash(rm:.claude/context/*)"
+    ],
+    "deny": [
+      "Read(.env)",
+      "Read(**/*.pem)",
+      "Read(**/credentials*)"
+    ],
+    "ask": [
+      "Bash(kill -9:*)",
+      "Bash(kill -KILL:*)",
+      "Bash(kill -SIGKILL:*)",
+      "Bash(pkill -9:*)",
+      "Bash(pkill -KILL:*)"
+    ]
+  },
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/session-start.sh"
+          }
+        ]
+      }
+    ]
+  }
+}

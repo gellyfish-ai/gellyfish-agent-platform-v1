@@ -1,0 +1,16 @@
+{
+  "name": "mcp-keychain-swift",
+  "version": "1.0.0",
+  "description": "",
+  "main": "fill-password.js",
+  "scripts": {
+    "test": "node --test tests/"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "ws": "^8.20.0"
+  }
+}

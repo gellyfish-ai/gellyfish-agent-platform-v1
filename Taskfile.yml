@@ -1,0 +1,326 @@
+# https://taskfile.dev
+version: '3'
+
+vars:
+  APPS_DIR: apps
+  PACKAGES_DIR: packages
+
+tasks:
+  # =============================================================================
+  # DEFAULT
+  # =============================================================================
+  default:
+    desc: Show available tasks
+    cmds:
+      - task --list
+
+  # =============================================================================
+  # INSTALL - Language-specific dependency installation
+  # =============================================================================
+  install:
+    desc: Install all dependencies across all packages
+    cmds:
+      - task: install:js
+      - task: install:python
+      - task: install:rust
+    silent: true
+
+  install:js:
+    desc: Install JavaScript/TypeScript dependencies
+    cmds:
+      - echo "Installing JS dependencies..."
+      - |
+        if [ -f pnpm-workspace.yaml ]; then
+          pnpm install
+        fi
+    status:
+      - test ! -f pnpm-workspace.yaml
+
+  install:python:
+    desc: Install Python dependencies
+    cmds:
+      - echo "Installing Python dependencies..."
+      - |
+        for dir in {{.APPS_DIR}}/* {{.PACKAGES_DIR}}/*; do
+          if [ -f "$dir/pyproject.toml" ] || [ -f "$dir/requirements.txt" ]; then
+            echo "  -> $dir"
+            cd "$dir" && pip install -e ".[dev]" 2>/dev/null || pip install -r requirements.txt 2>/dev/null || true
+            cd - > /dev/null
+          fi
+        done
+    silent: true
+
+  install:rust:
+    desc: Install Rust dependencies (cargo fetch)
+    cmds:
+      - echo "Installing Rust dependencies..."
+      - |
+        for dir in {{.APPS_DIR}}/* {{.PACKAGES_DIR}}/*; do
+          if [ -f "$dir/Cargo.toml" ]; then
+            echo "  -> $dir"
+            cd "$dir" && cargo fetch
+            cd - > /dev/null
+          fi
+        done
+    silent: true
+
+  # =============================================================================
+  # BUILD
+  # =============================================================================
+  build:
+    desc: Build all packages
+    cmds:
+      - task: build:js
+      - task: build:python
+      - task: build:rust
+
+  build:js:
+    desc: Build TypeScript/JavaScript packages
+    cmds:
+      - |
+        if [ -f pnpm-workspace.yaml ]; then
+          pnpm run build --filter './apps/*' --filter './packages/*'
+        fi
+
+  build:python:
+    desc: Build Python packages
+    cmds:
+      - |
+        for dir in {{.APPS_DIR}}/* {{.PACKAGES_DIR}}/*; do
+          if [ -f "$dir/pyproject.toml" ]; then
+            echo "Building $dir..."
+            cd "$dir" && python -m build 2>/dev/null || true
+            cd - > /dev/null
+          fi
+        done
+
+  build:rust:
+    desc: Build Rust packages
+    cmds:
+      - |
+        for dir in {{.APPS_DIR}}/* {{.PACKAGES_DIR}}/*; do
+          if [ -f "$dir/Cargo.toml" ]; then
+            echo "Building $dir..."
+            cd "$dir" && cargo build --release
+            cd - > /dev/null
+          fi
+        done
+
+  # =============================================================================
+  # TEST
+  # =============================================================================
+  test:
+    desc: Run all tests across all packages
+    cmds:
+      - task: test:js
+      - task: test:python
+      - task: test:rust
+      - task: test:swift
+
+  test:js:
+    desc: Run JavaScript/TypeScript tests
+    cmds:
+      - |
+        if [ -f pnpm-workspace.yaml ]; then
+          pnpm run test --filter './apps/*' --filter './packages/*'
+        fi
+
+  test:python:
+    desc: Run Python tests
+    cmds:
+      - |
+        for dir in {{.APPS_DIR}}/* {{.PACKAGES_DIR}}/*; do
+          if [ -f "$dir/pyproject.toml" ] || [ -f "$dir/pytest.ini" ] || [ -d "$dir/tests" ]; then
+            if [ -f "$dir/pyproject.toml" ] || [ -f "$dir/requirements.txt" ]; then
+              echo "Testing $dir..."
+              cd "$dir" && pytest -v 2>/dev/null || true
+              cd - > /dev/null
+            fi
+          fi
+        done
+
+  test:rust:
+    desc: Run Rust tests
+    cmds:
+      - |
+        for dir in {{.APPS_DIR}}/* {{.PACKAGES_DIR}}/*; do
+          if [ -f "$dir/Cargo.toml" ]; then
+            echo "Testing $dir..."
+            cd "$dir" && cargo test
+            cd - > /dev/null
+          fi
+        done
+
+  test:swift:
+    desc: Run Swift tests
+    cmds:
+      - |
+        for dir in {{.APPS_DIR}}/* {{.PACKAGES_DIR}}/*; do
+          if [ -f "$dir/Package.swift" ]; then
+            echo "Testing $dir..."
+            cd "$dir" && swift test
+            cd - > /dev/null
+          fi
+        done
+
+  # =============================================================================
+  # LINT
+  # =============================================================================
+  lint:
+    desc: Lint all packages
+    cmds:
+      - task: lint:js
+      - task: lint:python
+      - task: lint:rust
+
+  lint:js:
+    desc: Lint JavaScript/TypeScript
+    cmds:
+      - |
+        if [ -f pnpm-workspace.yaml ]; then
+          pnpm run lint --filter './apps/*' --filter './packages/*'
+        fi
+
+  lint:python:
+    desc: Lint Python with ruff
+    cmds:
+      - |
+        for dir in {{.APPS_DIR}}/* {{.PACKAGES_DIR}}/*; do
+          if [ -f "$dir/pyproject.toml" ]; then
+            echo "Linting $dir..."
+            cd "$dir" && ruff check . 2>/dev/null || true
+            cd - > /dev/null
+          fi
+        done
+
+  lint:rust:
+    desc: Lint Rust with clippy
+    cmds:
+      - |
+        for dir in {{.APPS_DIR}}/* {{.PACKAGES_DIR}}/*; do
+          if [ -f "$dir/Cargo.toml" ]; then
+            echo "Linting $dir..."
+            cd "$dir" && cargo clippy -- -D warnings
+            cd - > /dev/null
+          fi
+        done
+
+  # =============================================================================
+  # FORMAT
+  # =============================================================================
+  fmt:
+    desc: Format all code
+    cmds:
+      - task: fmt:js
+      - task: fmt:python
+      - task: fmt:rust
+
+  fmt:js:
+    desc: Format JavaScript/TypeScript with prettier
+    cmds:
+      - |
+        if [ -f pnpm-workspace.yaml ]; then
+          pnpm run format --filter './apps/*' --filter './packages/*'
+        fi
+
+  fmt:python:
+    desc: Format Python with ruff
+    cmds:
+      - |
+        for dir in {{.APPS_DIR}}/* {{.PACKAGES_DIR}}/*; do
+          if [ -f "$dir/pyproject.toml" ]; then
+            cd "$dir" && ruff format . 2>/dev/null || true
+            cd - > /dev/null
+          fi
+        done
+
+  fmt:rust:
+    desc: Format Rust
+    cmds:
+      - |
+        for dir in {{.APPS_DIR}}/* {{.PACKAGES_DIR}}/*; do
+          if [ -f "$dir/Cargo.toml" ]; then
+            cd "$dir" && cargo fmt
+            cd - > /dev/null
+          fi
+        done
+
+  # =============================================================================
+  # CLEAN
+  # =============================================================================
+  clean:
+    desc: Clean all build artifacts
+    cmds:
+      - task: clean:js
+      - task: clean:python
+      - task: clean:rust
+
+  clean:js:
+    desc: Clean JS build artifacts
+    cmds:
+      - find . -name "node_modules" -type d -prune -exec rm -rf {} + 2>/dev/null || true
+      - find . -name "dist" -type d -prune -exec rm -rf {} + 2>/dev/null || true
+      - find . -name ".turbo" -type d -prune -exec rm -rf {} + 2>/dev/null || true
+
+  clean:python:
+    desc: Clean Python build artifacts
+    cmds:
+      - find . -name "__pycache__" -type d -prune -exec rm -rf {} + 2>/dev/null || true
+      - find . -name "*.egg-info" -type d -prune -exec rm -rf {} + 2>/dev/null || true
+      - find . -name ".pytest_cache" -type d -prune -exec rm -rf {} + 2>/dev/null || true
+      - find . -name ".ruff_cache" -type d -prune -exec rm -rf {} + 2>/dev/null || true
+
+  clean:rust:
+    desc: Clean Rust build artifacts
+    cmds:
+      - |
+        for dir in {{.APPS_DIR}}/* {{.PACKAGES_DIR}}/*; do
+          if [ -f "$dir/Cargo.toml" ]; then
+            cd "$dir" && cargo clean
+            cd - > /dev/null
+          fi
+        done
+
+  # =============================================================================
+  # DEV - Start development servers
+  # =============================================================================
+  dev:
+    desc: Start all development servers
+    deps:
+      - dev:gateway
+
+  dev:gateway:
+    desc: Start the gateway server (dev mode)
+    dir: apps/gateway
+    cmds:
+      - pnpm dev
+
+  # =============================================================================
+  # CI
+  # =============================================================================
+  ci:
+    desc: Run full CI pipeline (install, lint, test, build)
+    cmds:
+      - task: install
+      - task: lint
+      - task: test
+      - task: build
+
+  # =============================================================================
+  # PACKAGE-SPECIFIC TASKS
+  # Run task in a specific package: task run -- <package> <command>
+  # =============================================================================
+  run:
+    desc: "Run a task in a specific package (usage: task run -- apps/gateway test)"
+    cmds:
+      - |
+        PACKAGE="{{.CLI_ARGS}}"
+        PACKAGE_DIR=$(echo "$PACKAGE" | cut -d' ' -f1)
+        COMMAND=$(echo "$PACKAGE" | cut -d' ' -f2-)
+        if [ -d "$PACKAGE_DIR" ]; then
+          echo "Running '$COMMAND' in $PACKAGE_DIR..."
+          cd "$PACKAGE_DIR" && $COMMAND
+        else
+          echo "Package not found: $PACKAGE_DIR"
+          exit 1
+        fi

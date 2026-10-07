@@ -1,0 +1,43 @@
+{
+  "name": "@gellyfish/gateway",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tsx scripts/generate-version.ts && tsx watch src/index.ts",
+    "prebuild": "tsx scripts/generate-version.ts",
+    "build": "tsc",
+    "start": "NODE_ENV=production node dist/index.js",
+    "start:dev": "tsx src/index.ts",
+    "pretest": "tsx scripts/generate-version.ts",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "lint": "eslint src/ tests/",
+    "lint:fix": "eslint src/ tests/ --fix",
+    "pretypecheck": "tsx scripts/generate-version.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.81.0",
+    "@fastify/cors": "^10.0.0",
+    "@fastify/multipart": "^9.4.0",
+    "@fastify/static": "^9.0.0",
+    "@fastify/websocket": "^11.2.0",
+    "@modelcontextprotocol/sdk": "^1.29.0",
+    "better-sqlite3": "^12.6.2",
+    "dotenv": "^17.2.3",
+    "fastify": "^5.0.0",
+    "pino": "^10.3.1",
+    "ws": "^8.19.0"
+  },
+  "devDependencies": {
+    "@types/better-sqlite3": "^7.6.13",
+    "@types/node": "^22.0.0",
+    "@types/ws": "^8.18.1",
+    "eslint": "^9.0.0",
+    "tsx": "^4.0.0",
+    "typescript": "^5.0.0",
+    "vitest": "^2.0.0"
+  }
+}

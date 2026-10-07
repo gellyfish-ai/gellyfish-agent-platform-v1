@@ -1,0 +1,17 @@
+{
+  "name": "@gellyfish/mcp-keychain",
+  "version": "1.0.0",
+  "description": "MCP server for secure macOS Keychain access",
+  "type": "module",
+  "main": "src/index.js",
+  "bin": {
+    "mcp-keychain": "./src/index.js"
+  },
+  "scripts": {
+    "start": "node src/index.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0",
+    "zod": "^4.3.4"
+  }
+}

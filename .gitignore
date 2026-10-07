@@ -1,0 +1,124 @@
+# =============================================================================
+# DEPENDENCIES
+# =============================================================================
+
+# JavaScript/TypeScript
+node_modules/
+.pnpm-store/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.eggs/
+*.egg
+.venv/
+venv/
+env/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+
+# Rust
+target/
+Cargo.lock
+!apps/**/Cargo.lock
+!packages/**/Cargo.lock
+
+# Swift
+.build/
+.swiftpm/
+xcuserdata/
+*.xcscmblueprint
+# Note: Swift Package Manager uses "Packages/" but we have "packages/" for our code
+# macOS is case-insensitive, so we don't ignore Packages/ here
+
+# Ruby
+vendor/bundle/
+.bundle/
+*.gem
+
+# =============================================================================
+# BUILD OUTPUTS
+# =============================================================================
+dist/
+build/
+out/
+.next/
+.nuxt/
+.turbo/
+
+# =============================================================================
+# ENVIRONMENT & SECRETS
+# =============================================================================
+.env
+.env.*
+!.env.example
+.secrets
+
+# Credentials (never commit these)
+credentials.json
+token.json
+*.pem
+*.key
+*.p12
+*.pfx
+secrets/
+
+# =============================================================================
+# IDE & EDITOR
+# =============================================================================
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.project
+.classpath
+.settings/
+
+# =============================================================================
+# OS
+# =============================================================================
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# =============================================================================
+# LOGS & TEMP
+# =============================================================================
+*.log
+logs/
+tmp/
+temp/
+*.tmp
+
+# =============================================================================
+# COVERAGE & TESTING
+# =============================================================================
+coverage/
+.coverage
+htmlcov/
+.nyc_output/
+*.lcov
+tarpaulin-report.html
+
+# =============================================================================
+# CLAUDE CODE
+# =============================================================================
+**/.claude/settings.local.json
+.claude/context/
+
+.gstack/
+
+# Build-time generated metadata
+apps/gateway/src/version.generated.ts
+
+# Temporary screenshots (playwright, QA testing)
+/*.png
